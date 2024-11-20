@@ -1,0 +1,11 @@
+*{margin: 0;pad: 0;box-sizing: border-box;}
+.card{
+  background-color: lightgoldenrodyellow;
+  position: absolute;
+  border: 1px solid black;
+}
+body{
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+}
