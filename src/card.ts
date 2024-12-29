@@ -1,12 +1,14 @@
+import tinymce from "tinymce"
 import Fridge from "./Fridge"
 
 let i = 0
 export default class Card{
     id:number
-    text:string
+    text:HTMLDivElement
     element:HTMLDivElement
     resizeButton:HTMLButtonElement
     deleteButton:HTMLButtonElement
+    editButton:HTMLButtonElement
     width:number = 200
     height:number = 200
     x:number = 0
@@ -14,6 +16,8 @@ export default class Card{
 
     offsetX:number = 0
     offsetY:number = 0
+
+    editing: boolean = false
 
 
     static active:boolean = false
@@ -23,11 +27,12 @@ export default class Card{
 
     constructor(){
         this.id = i++
-        this.text = "Placeholder gfdgfdsg dsfgfsd gfs dg ds gfds gdsgfd sgfhhfgdh fggfhdgfh ghfddfgh gghfgfhd dfhgg fdhdfg hghfdgd"
 
         this.element = document.createElement("div")
-        console.log(this.element.getBoundingClientRect().width);
-        this.element.innerText = this.text
+        this.text = document.createElement("div")
+        this.text.innerText = "fkhdsffhsdgbhjksa s fghjksg s fgsdahkj"
+        this.text.classList.add("innertext")
+        this.element.append(this.text)
         this.element.classList.add("card")
         this.element.style.zIndex = `${this.id}`
 
@@ -38,8 +43,15 @@ export default class Card{
         this.deleteButton = document.createElement("button")
         this.deleteButton.innerText = "X"
         this.deleteButton.classList.add("delete")
-
         this.element.append(this.deleteButton)
+
+
+        this.editButton = document.createElement("button")
+        this.editButton.innerText = "E"
+        this.editButton.classList.add("edit")
+        this.editButton.onclick = this.edit.bind(this)
+        this.element.append(this.editButton)
+
         this.deleteButton.onclick = () =>{
             this.element.remove()
             Fridge.arr = Fridge.arr.filter(card => card.id !== this.id)
@@ -52,10 +64,22 @@ export default class Card{
         this.resize(this.width, this.height)
 
         this.element.onmousedown = (e) =>{
+
             this.element.style.cursor = "grabbing"
             Card.active = true
-            this.offsetX = e.offsetX
-            this.offsetY = e.offsetY
+
+            if((e.target as HTMLDivElement).classList.contains("innertext")){
+                this.offsetX = e.offsetX + 20
+                this.offsetY = e.offsetY + 20
+            }
+            else{
+                this.offsetX = e.offsetX
+                this.offsetY = e.offsetY
+            }
+            if((e.target as HTMLElement).classList.contains("delete")){
+                this.offsetX = this.width - e.offsetX
+                this.offsetY = e.offsetY
+            }
             
             this.element.style.zIndex = `${i++}`
 
@@ -67,18 +91,7 @@ export default class Card{
             }
         }
 
-        // this.element.oncontextmenu = (e) =>{
-        //     e.preventDefault()
-        //     const newCard = new Card()
-        //     newCard.x = this.x + 20
-        //     newCard.y = this.y + 20
-        //     newCard.text = this.text
-        //     newCard.resize(this.width, this.height)
-        //     Fridge.arr.push(newCard)
-        //     Card.activeElement = newCard
-        // }
-
-        this.element.onmouseup = () =>{
+        document.onmouseup = () =>{
             this.element.style.cursor = "grab"
             Card.active = false
             this.offsetX = 0
@@ -108,6 +121,56 @@ export default class Card{
         this.y=e.clientY - this.offsetY
         this.element.style.left = `${this.x}px`
         this.element.style.top = `${this.y}px`
+
+    }
+    edit(){
+        if(this.editing){
+            return
+        }
+        this.editing = true
+        const editor = document.createElement("div")
+        editor.id = "editor"
+        document.body.append(editor)
+        tinymce.init({
+            selector: '#editor',
+            license_key: 'gpl',
+            plugins: "save",
+            toolbar: 'undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | ' +
+            'bullist numlist outdent indent | link image | preview media fullscreen | ' +
+            'forecolor backcolor emoticons | save cancel',
+            save_oncancelcallback: () => {
+                tinymce.activeEditor?.destroy()
+                document.querySelector("#editor")!.remove()
+                this.editing = false
+            },
+            save_onsavecallback: () =>{
+                this.text.innerHTML = tinymce.activeEditor!.getContent()
+                tinymce.activeEditor?.destroy()
+                document.querySelector("#editor")!.remove()
+                this.editing = false
+            },
+            branding: false
+        });
+        
+        setTimeout(()=>{
+            tinymce.activeEditor!.setContent(this.text.innerHTML, { format: "html"})
+            const buttons = document.querySelector<HTMLDivElement>('.tox-toolbar__primary[role="group"] > div:last-child')!
+            document.querySelector(".tox-statusbar")!.appendChild(buttons)
+            buttons.style.position = "absolute"
+            buttons.style.right = "10px"
+            console.log(buttons.childNodes);
+            
+
+
+
+        },200)
+
+        setTimeout(()=>{
+            document.querySelectorAll(".tox-statusbar button").forEach(e=>{
+                e.ariaDisabled = "false";
+                e.classList.remove("tox-tbtn--disabled")
+            })
+        }, 350)
 
     }
 }

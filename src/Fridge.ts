@@ -29,10 +29,7 @@ export default class Fridge{
             Fridge.update(Fridge.run)
         }
 
-        document.querySelector
-
         document.body.onmousemove = (e) =>{
-        console.log(e.offsetX, e.offsetY, Fridge.arr);
         
         if(Card.active && Card.event === "move"){
             Card.activeElement?.move(e)
