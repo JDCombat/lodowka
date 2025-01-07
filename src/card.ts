@@ -13,6 +13,7 @@ export default class Card{
     height:number = 200
     x:number = 0
     y:number = 0
+    fridgeName:string = ""
 
     offsetX:number = 0
     offsetY:number = 0
@@ -25,7 +26,7 @@ export default class Card{
     static event: "move" | "resize" | "none" = "none"
 
 
-    constructor(){
+    constructor(name?:string){
         this.id = i++
 
         this.element = document.createElement("div")
@@ -76,9 +77,10 @@ export default class Card{
                 this.offsetX = e.offsetX
                 this.offsetY = e.offsetY
             }
-            if((e.target as HTMLElement).classList.contains("delete")){
-                this.offsetX = this.width - e.offsetX
-                this.offsetY = e.offsetY
+            if((e.target as HTMLElement).classList.contains("delete") ||
+            (e.target as HTMLElement).classList.contains("edit")
+        ){
+                return
             }
             
             this.element.style.zIndex = `${i++}`
@@ -99,6 +101,8 @@ export default class Card{
             Card.activeElement = null
             Card.event = "none"
         }
+
+        this.fridgeName = name ?? ""
 
         document.querySelector("#app")!.append(this.element)
     }
