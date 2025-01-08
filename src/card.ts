@@ -2,6 +2,7 @@ import tinymce from "tinymce"
 import Fridge from "./Fridge"
 
 let i = 0
+let editing:boolean = false
 export default class Card{
     id:number
     text:HTMLDivElement
@@ -18,7 +19,6 @@ export default class Card{
     offsetX:number = 0
     offsetY:number = 0
 
-    editing: boolean = false
 
 
     static active:boolean = false
@@ -128,10 +128,10 @@ export default class Card{
 
     }
     edit(){
-        if(this.editing){
+        if(editing){
             return
         }
-        this.editing = true
+        editing = true
         const editor = document.createElement("div")
         editor.id = "editor"
         document.body.append(editor)
@@ -145,36 +145,27 @@ export default class Card{
             save_oncancelcallback: () => {
                 tinymce.activeEditor?.destroy()
                 document.querySelector("#editor")!.remove()
-                this.editing = false
+                editing = false
             },
             save_onsavecallback: () =>{
                 this.text.innerHTML = tinymce.activeEditor!.getContent()
                 tinymce.activeEditor?.destroy()
                 document.querySelector("#editor")!.remove()
-                this.editing = false
+                editing = false
             },
             branding: false
-        });
-        
-        setTimeout(()=>{
+        }).then(()=>{
             tinymce.activeEditor!.setContent(this.text.innerHTML, { format: "html"})
             const buttons = document.querySelector<HTMLDivElement>('.tox-toolbar__primary[role="group"] > div:last-child')!
             document.querySelector(".tox-statusbar")!.appendChild(buttons)
             buttons.style.position = "absolute"
             buttons.style.right = "10px"
             console.log(buttons.childNodes);
-            
-
-
-
-        },200)
-
-        setTimeout(()=>{
             document.querySelectorAll(".tox-statusbar button").forEach(e=>{
                 e.ariaDisabled = "false";
                 e.classList.remove("tox-tbtn--disabled")
             })
-        }, 350)
+        })
 
     }
 }

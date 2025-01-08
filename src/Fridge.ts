@@ -33,10 +33,10 @@ export default class Fridge{
         const addCard = async () =>{
             const newCard = new Card(this.name)
             
-            await fetch("http://localhost/lodowka/insert.php", {
-                method: "post",
-                body: JSON.stringify(newCard)
-            })
+            // await fetch("http://localhost/lodowka/insert.php", {
+            //     method: "post",
+            //     body: JSON.stringify(newCard)
+            // })
 
             Fridge.arr.push(newCard)
             Fridge.run+=1

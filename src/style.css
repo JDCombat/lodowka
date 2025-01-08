@@ -12,7 +12,7 @@ body{
   grid-template-rows: 20px 1fr 20px;
 }
 .card div{
-  overflow: scroll;
+  overflow: auto;
   grid-area:  2 / 2 / 3 / 3;
 }
 body{

@@ -23,6 +23,9 @@ button!.onclick = async () =>{
         const f = new Fridge(input.value)
         f.start(app)
     }
+
 }
+const f = new Fridge("tak")
+f.start(app)
 
 

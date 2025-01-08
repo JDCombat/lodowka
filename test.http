@@ -1,0 +1,5 @@
+###
+POST http://localhost/lodowka/test.php
+Content-Type: "application/json"
+
+{"jdsgdf":"fdkfdsagfd"}
