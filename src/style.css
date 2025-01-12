@@ -1,11 +1,11 @@
-*{margin: 0;padding: 0;box-sizing: border-box;user-select: none;}
+*{margin: 0;padding: 0;box-sizing:border-box;user-select: none;}
 body{
   overflow: hidden;
 }
 .card{
   background-color: lightgoldenrodyellow;
   position: absolute;
-  border: 1px solid black;
+  outline: 1px solid black;
   cursor: grab;
   display: grid;
   grid-template-columns: 20px 1fr 20px;
@@ -36,21 +36,18 @@ body{
   z-index: 9999999999999999999999999999999999999999999999999999999999 !important;
   position: absolute;
   width: 900px;
-  left: 200px;
+  left: calc(50% - 450px);
 }
 .tox > *{
   z-index: 9999999999999999999999999999999999999999999999999999999999 !important;
 }
-/* .tox-toolbar__primary[role="group"] > div:last-child{
-  position: absolute;
-  right: 0;
-  bottom: -280px;
-} */
+
 .innertext > *{
   pointer-events: none;
 }
 button{
   border-radius: 0;
+  border: none;
 }
 .tox-promotion{
   display: none;
